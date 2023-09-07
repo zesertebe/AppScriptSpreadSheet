@@ -1,8 +1,9 @@
 
+
 /**
  * @class SpreadSheet
  * @author: Arturo G - zesertebe@gmail.com
- * @version: 1.0.8
+ * @version: 1.0.9
  * @classdesc: Clase que proporciona metodos para leer y escribir datos en hojas de Google
  * se recomienda usar la extension de Chrome para una mejor visualizacion: https://chrome.google.com/webstore/detail/gase-google-appscript-edi/lefcemnilieamgifcegilmkaclmhakfc
  * */
@@ -67,13 +68,11 @@ class SpreadSheet {
     if (this.activeSheet == null) {
       return { status: null, content: null };
     }
-    else {
-      try {
-        this.sheetContent = this.activeSheet.getRange(1, 1, this.activeSheet.getLastRow(), this.activeSheet.getLastColumn()).getDisplayValues();
-        return { status: true, content: this.sheetContent };
-      } catch (error) {
-        return { status: false, content: error }
-      }
+    try {
+      this.sheetContent = this.activeSheet.getRange(1, 1, this.activeSheet.getLastRow(), this.activeSheet.getLastColumn()).getDisplayValues();
+      return { status: true, content: this.sheetContent };
+    } catch (error) {
+      return { status: false, content: error }
     }
   }
 
@@ -98,14 +97,13 @@ class SpreadSheet {
     if (this.activeSheet == null) {
       return { status: null, content: null };
     }
-    else {
-      try {
-        this.sheetContent = this.activeSheet.getRange(1, 1, this.activeSheet.getLastRow(), this.activeSheet.getLastColumn()).getValues();
-        return { status: true, content: this.sheetContent };
-      } catch (error) {
-        return { status: false, content: error }
-      }
+    try {
+      this.sheetContent = this.activeSheet.getRange(1, 1, this.activeSheet.getLastRow(), this.activeSheet.getLastColumn()).getValues();
+      return { status: true, content: this.sheetContent };
+    } catch (error) {
+      return { status: false, content: error }
     }
+
   }
 
   /**
@@ -167,12 +165,18 @@ class SpreadSheet {
    */
   writeValueOnARow(row, dataArray) {
     try {
-      this.activeSheet.getRange(row, 1, 1, this.activeSheet.getLastColumn()).setValues([dataArray]);
+      const totalColumns = this.activeSheet.getLastColumn();
+      while (dataArray.length < totalColumns) {
+        dataArray.push("");
+      }
+      this.activeSheet.getRange(row, 1, 1, dataArray.length).setValues([dataArray]);
       return { status: true, content: true };
     } catch (error) {
       return { status: false, content: error };
     }
   }
+
+
 
   /**
    * ### Escribe datos en una sola columna
@@ -232,7 +236,7 @@ class SpreadSheet {
    * @param {number} row La fila que queremos leer
    * @return {Object} {} - objeto que informa del estado
    */
-  readRow(row){
+  readRow(row) {
     try {
       this.sheetContent = this.activeSheet.getRange(row, 1, 1, this.activeSheet.getLastColumn()).getDisplayValues();
       return { status: true, content: this.sheetContent }
@@ -253,7 +257,7 @@ class SpreadSheet {
    * @param {number} column La columna que queremos leer
    * @return {Object} {} - objeto que informa del estado
    */
-  readColumn(column){
+  readColumn(column) {
     try {
       this.sheetContent = this.activeSheet.getRange(1, column, this.activeSheet.getLastRow(), 1).getDisplayValues();
       return { status: true, content: this.sheetContent }
@@ -353,7 +357,7 @@ class SpreadSheet {
     return {
       author: 'Arturo Gomez => zesertebe@gmail.com',
       description: `Clase diseñada para trabajar hojas de calculo con el entorno AppScript proporcionando metodos quefacilitan la lectura y escritura de datos`,
-      web: 'https://ocancelada.dev',
+      web: 'https://adev.dev',
     }
   }
 
@@ -381,4 +385,5 @@ class SpreadSheet {
     }
   }
 }
+
 
